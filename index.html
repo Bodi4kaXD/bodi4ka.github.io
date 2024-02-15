@@ -89,10 +89,25 @@ function addToCart(product, price) {
     cartTotal += price;
     updateCartUI();
 }
+function getChatId() {
+    const botToken = '6722686062:AAEjO0wEnBC1JJCalkuEEId5a6b3LJJ6yyk';
 
+    fetch(`https://api.telegram.org/bot${botToken}/getUpdates`)
+    .then(response => response.json())
+    .then(data => {
+        const chatId = data.result[0].message.chat.id;
+        console.log('Chat ID:', chatIDN);
+        // Теперь у вас есть ID чата, который можно использовать
+        // в функции sendCartToTelegram() или для других нужд.
+    })
+    .catch(error => {
+        console.error('Error getting chat ID:', error);
+    });
+}
+    
 function sendCartToTelegram() {
     const botToken = '6722686062:AAEjO0wEnBC1JJCalkuEEId5a6b3LJJ6yyk';
-    const chatId = '841954369';
+    const chatId = chatIDN;
 
     if (!chatId) {
         console.error('Chat ID not available.');
