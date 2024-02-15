@@ -53,6 +53,7 @@
 
 <header>
     <h1>Интернет-магазин комплектующих</h1>
+    <input type="hidden" id="chatId" name="chatId">
 </header>
 
 <section id="products">
@@ -81,7 +82,7 @@
 </div>
 <button onclick="sendCartToTelegram()">Отправить корзину в Telegram</button>
 <script>
-       let cartItems = [];
+    let cartItems = [];
     let cartTotal = 0;
 
 function addToCart(product, price) {
@@ -92,11 +93,15 @@ function addToCart(product, price) {
 
 function sendCartToTelegram() {
     const botToken = '6722686062:AAEjO0wEnBC1JJCalkuEEId5a6b3LJJ6yyk';
-    const chatId = '841954369';
+    const chatId = document.getElementById('chatId').value;
+
+    if (!chatId) {
+        console.error('Chat ID not available.');
+        return;
+    }
 
     const message = buildCartMessage();
 
-    // Замените настройки чата и токен бота
     fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
         headers: {
@@ -146,6 +151,33 @@ function updateCartUI() {
     cartTotalElement.textContent = cartTotal;
 }
 
+    // Добавьте эту функцию к вашему существующему JavaScript коду
+function getChatId() {
+    const botToken = '6722686062:AAEjO0wEnBC1JJCalkuEEId5a6b3LJJ6yyk';
+
+    return fetch(`https://api.telegram.org/bot${botToken}/getUpdates`)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.result && data.result[0] && data.result[0].message && data.result[0].message.chat) {
+                return data.result[0].message.chat.id;
+            }
+            return null;
+        })
+        .catch(error => {
+            console.error('Error getting chat ID:', error);
+            return null;
+        });
+}
+
+// Вызовите эту функцию, когда страница загружена
+document.addEventListener('DOMContentLoaded', () => {
+    getChatId().then(chatId => {
+        if (chatId) {
+            // Замените ID чата в вашей функции отправки сообщения
+            document.getElementById('chatId').value = chatId;
+        }
+    });
+});
 </script>
 
 </body>
