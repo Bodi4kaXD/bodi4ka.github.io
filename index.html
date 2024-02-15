@@ -158,13 +158,15 @@ function getChatId() {
     return fetch(`https://api.telegram.org/bot${botToken}/getUpdates`)
         .then(response => response.json())
         .then(data => {
+            console.log('Ответ API Telegram:', data);
+
             if (data && data.result && data.result[0] && data.result[0].message && data.result[0].message.chat) {
                 return data.result[0].message.chat.id;
             }
             return null;
         })
         .catch(error => {
-            console.error('Error getting chat ID:', error);
+            console.error('Ошибка при получении идентификатора чата:', error);
             return null;
         });
 }
