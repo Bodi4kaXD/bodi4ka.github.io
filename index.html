@@ -95,7 +95,7 @@ function getChatId() {
     fetch(`https://api.telegram.org/bot${botToken}/getUpdates`)
     .then(response => response.json())
     .then(data => {
-        const chatId = data.result[0].message.chat.id;
+        const chatIDN = data.result[0].message.chat.id;
         console.log('Chat ID:', chatIDN);
         // Теперь у вас есть ID чата, который можно использовать
         // в функции sendCartToTelegram() или для других нужд.
