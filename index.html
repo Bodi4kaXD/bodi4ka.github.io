@@ -79,7 +79,6 @@
     <ul id="cart-items"></ul>
     <p>Total: $<span id="cart-total">0</span></p>
 </div>
-    <input type="hidden" id="chatId" name="chatId">
 <button onclick="sendCartToTelegram()">Отправить корзину в Telegram</button>
 <script>
     let cartItems = [];
@@ -93,7 +92,7 @@ function addToCart(product, price) {
 
 function sendCartToTelegram() {
     const botToken = '6722686062:AAEjO0wEnBC1JJCalkuEEId5a6b3LJJ6yyk';
-    const chatId = document.getElementById('chatId').value;
+    const chatId = '841954369';
 
     if (!chatId) {
         console.error('Chat ID not available.');
@@ -151,42 +150,7 @@ function updateCartUI() {
     cartTotalElement.textContent = cartTotal;
 }
 
-    // Добавьте эту функцию к вашему существующему JavaScript коду
-function getChatId() {
-    const botToken = '6722686062:AAEjO0wEnBC1JJCalkuEEId5a6b3LJJ6yyk';
-
-    return fetch(`https://api.telegram.org/bot${botToken}/getUpdates`)
-        .then(response => response.json())
-        .then(data => {
-            console.log('Ответ API Telegram:', data);
-
-            if (data && data.result && data.result.length > 0) {
-                const chat = data.result[0].message.chat;
-                if (chat) {
-                    console.log('Идентификатор чата найден:', chat.id);
-                    return chat.id;
-                }
-            }
-
-            console.warn('Идентификатор чата не найден в обновлениях.');
-            return null;
-        })
-        .catch(error => {
-            console.error('Ошибка при получении идентификатора чата:', error);
-            return null;
-        });
-}
-
-        // Вызовите функцию getChatId после загрузки страницы
-        document.addEventListener('DOMContentLoaded', () => {
-            getChatId().then(chatId => {
-                if (chatId) {
-                    document.getElementById('chatId').value = chatId;
-                } else {
-                    console.error('Идентификатор чата не доступен.');
-                }
-            });
-        });
+    
 </script>
 
 </body>
