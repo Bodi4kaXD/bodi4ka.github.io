@@ -79,35 +79,73 @@
     <ul id="cart-items"></ul>
     <p>Total: $<span id="cart-total">0</span></p>
 </div>
-
+<button onclick="sendCartToTelegram()">Отправить корзину в Telegram</button>
 <script>
-    let cartItems = [];
+       let cartItems = [];
     let cartTotal = 0;
 
-    function addToCart(product, price) {
-        cartItems.push({ product, price });
-        cartTotal += price;
+function addToCart(product, price) {
+    cartItems.push({ product, price });
+    cartTotal += price;
+    updateCartUI();
+}
 
-        updateCartUI();
-    }
+function sendCartToTelegram() {
+    const botToken = '6722686062:AAEjO0wEnBC1JJCalkuEEId5a6b3LJJ6yyk';
+    const chatId = '841954369';
 
-    function updateCartUI() {
-        const cartItemsElement = document.getElementById('cart-items');
-        const cartTotalElement = document.getElementById('cart-total');
+    const message = buildCartMessage();
 
-        // Очищаем корзину перед обновлением
-        cartItemsElement.innerHTML = '';
+    // Замените настройки чата и токен бота
+    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Cart sent to Telegram:', data);
+    })
+    .catch(error => {
+        console.error('Error sending cart to Telegram:', error);
+    });
+}
 
-        // Обновляем отображение корзины
-        cartItems.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = `${item.product} - $${item.price}`;
-            cartItemsElement.appendChild(li);
-        });
+function buildCartMessage() {
+    let message = 'Содержимое корзины:\n';
 
-        // Обновляем общую стоимость
-        cartTotalElement.textContent = cartTotal;
-    }
+    cartItems.forEach(item => {
+        message += `${item.product} - $${item.price}\n`;
+    });
+
+    message += `Итого: $${cartTotal}`;
+
+    return message;
+}
+
+function updateCartUI() {
+    const cartItemsElement = document.getElementById('cart-items');
+    const cartTotalElement = document.getElementById('cart-total');
+
+    // Очищаем корзину перед обновлением
+    cartItemsElement.innerHTML = '';
+
+    // Обновляем отображение корзины
+    cartItems.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.product} - $${item.price}`;
+        cartItemsElement.appendChild(li);
+    });
+
+    // Обновляем общую стоимость
+    cartTotalElement.textContent = cartTotal;
+}
+
 </script>
 
 </body>
